@@ -86,7 +86,11 @@ type ClassificationResult = {
   classification?: any;
 };
 
-export function EligibilityWizard() {
+interface EligibilityWizardProps {
+  onNavigateToEspaceClient?: () => void;
+}
+
+export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizardProps = {}) {
   const [step, setStep] = useState(1);
   
   // Step 1
@@ -670,7 +674,7 @@ export function EligibilityWizard() {
                 Un email de confirmation a été envoyé à <strong className="text-gray-900">{email}</strong>.
               </p>
 
-              <div className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-left mb-8">
+              <div className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-left mb-6">
                 <p className="text-sm uppercase tracking-widest text-gray-500 font-bold mb-4 text-center">Votre code d'accès sécurisé</p>
                 <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 flex justify-center items-center shadow-sm">
                   <code className="text-4xl font-mono font-bold text-[#52B788] tracking-[0.2em]">
@@ -678,8 +682,36 @@ export function EligibilityWizard() {
                   </code>
                 </div>
                 <p className="text-sm text-gray-500 mt-5 leading-relaxed text-center font-medium">
-                  Copiez ce code et votre ICE, puis utilisez le bouton "Accès Espace Client" en haut à droite pour suivre l'état de votre dossier.
+                  Notez précieusement ce code et votre numéro d'ICE. Ils vous seront demandés pour vous connecter.
                 </p>
+              </div>
+
+              {/* Action Requise CTA */}
+              <div className="bg-[#FAFCFA] border-2 border-dashed border-[#52B788]/40 rounded-3xl p-8 text-left space-y-6">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-2.5 w-2.5 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#52B788] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#52B788]"></span>
+                  </span>
+                  <p className="text-xs uppercase tracking-wider text-[#52B788] font-extrabold">Action requise immédiatement</p>
+                </div>
+                
+                <div className="space-y-2">
+                  <h4 className="text-lg font-bold text-gray-900">Compléter le Diagnostic & Cadrage Métier</h4>
+                  <p className="text-xs text-gray-500 leading-relaxed">
+                    Pour valider définitivement votre éligibilité et permettre à nos équipes de configurer vos futurs outils de planification, veuillez vous connecter dès maintenant à l'Espace Client afin de remplir le diagnostic complet.
+                  </p>
+                </div>
+
+                {onNavigateToEspaceClient && (
+                  <button 
+                    onClick={onNavigateToEspaceClient}
+                    className="w-full sm:w-auto bg-[#1B2A4A] text-white hover:bg-black px-6 py-3.5 rounded-xl font-bold text-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer group"
+                  >
+                    <span>Accéder à l'Espace Client</span>
+                    <span className="group-hover:translate-x-0.5 transition-transform">→</span>
+                  </button>
+                )}
               </div>
             </div>
           )}

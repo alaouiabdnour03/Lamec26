@@ -427,7 +427,11 @@ export default function App() {
 						<h2 className="text-[#1B2A4A] text-3xl md:text-4xl font-bold">11. Formulaire d'Éligibilité</h2>
 					</div>
 					
-					<EligibilityWizard />
+					<EligibilityWizard onNavigateToEspaceClient={() => {
+						setCurrentView('espace-client');
+						// Scroll to top of the page so EspaceClient login is visible
+						window.scrollTo({ top: 0, behavior: 'smooth' });
+					}} />
 				</section>
 
 				{/* Footer */}
