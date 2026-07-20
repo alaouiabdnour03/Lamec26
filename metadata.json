@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Remix: La Mec Conseils Hero",
+  "description": "A migrated landing page hero section for La Mec Conseils.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
