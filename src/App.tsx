@@ -27,6 +27,26 @@ export default function App() {
 	}));
 
 	useEffect(() => {
+		const handleHashChange = () => {
+			if (window.location.hash === '#formulaire-eligibilite') {
+				setCurrentView('landing');
+				setTimeout(() => {
+					const element = document.getElementById('formulaire-eligibilite');
+					if (element) {
+						element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+					}
+				}, 300);
+			}
+		};
+
+		handleHashChange();
+		window.addEventListener('hashchange', handleHashChange);
+		return () => {
+			window.removeEventListener('hashchange', handleHashChange);
+		};
+	}, []);
+
+	useEffect(() => {
 		if (currentView !== 'landing') return;
 
 		const observer = new IntersectionObserver((entries) => {
@@ -648,7 +668,7 @@ export default function App() {
 				</section>
 
 				{/* Form Section */}
-				<section id="eligibility-section" className="px-4 md:px-12 mb-24 max-w-[1200px] mx-auto w-full">
+				<section id="formulaire-eligibilite" className="px-4 md:px-12 mb-24 max-w-[1200px] mx-auto w-full">
 					<motion.div 
 						initial={{ opacity: 0, y: 20 }}
 						whileInView={{ opacity: 1, y: 0 }}
