@@ -63,7 +63,7 @@ export default function App() {
 				{/* Hero Section */}
 				<section className="relative w-full mb-10 md:mb-14">
 					<div className="w-full bg-cover bg-center py-16 md:py-[139px] px-6 md:px-[100px] flex flex-col gap-10"
-						style={{ backgroundImage: 'url(https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/9m5pohjl_expires_30_days.png)' }}>
+						style={{ backgroundImage: 'radial-gradient(circle at 85% 40%, rgba(245, 158, 11, 0.3) 0%, rgba(245, 158, 11, 0.12) 25%, rgba(245, 158, 11, 0.03) 50%, transparent 80%), url(https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/9m5pohjl_expires_30_days.png)' }}>
 						<div className="w-full max-w-7xl mx-auto flex flex-col items-start relative">
 							
 							<div className="w-full flex flex-row justify-between items-start mb-12">
