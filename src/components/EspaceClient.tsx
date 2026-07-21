@@ -358,7 +358,7 @@ export function EspaceClient({ onBack }: { onBack: () => void }) {
         <div className="max-w-4xl mx-auto space-y-6">
           
           {/* Header */}
-          <header className="flex flex-row justify-between items-center gap-4 bg-white px-8 py-5 rounded-[24px] shadow-sm border border-slate-100/80 font-sans">
+          <header className="flex flex-row justify-between items-center gap-4 py-4 px-2 font-sans">
             <div className="flex items-center gap-4">
               <div className="flex flex-col">
                 <h1 className="text-sm font-extrabold text-slate-900 uppercase tracking-wide">Espace Partenaire</h1>
@@ -421,7 +421,7 @@ export function EspaceClient({ onBack }: { onBack: () => void }) {
                 
                 {/* Text description */}
                 <div className="space-y-1 text-center md:text-left">
-                  <h3 className="text-lg font-bold text-slate-900 tracking-tight">Diagnostic de conformité</h3>
+                  <h3 className="text-lg font-bold text-slate-900 tracking-tight">Cadrage & Métiers</h3>
                   <p className="text-xs text-slate-500 max-w-lg leading-relaxed font-medium">
                     {diagnosticCompleted 
                       ? 'Votre diagnostic est soumis et validé par nos conseillers. Nous étudions vos réponses pour préparer vos architectures de planification.'
@@ -470,17 +470,12 @@ export function EspaceClient({ onBack }: { onBack: () => void }) {
                   </span>
                 </div>
 
-                {/* Site Web */}
-                <div className="flex items-center gap-3 py-1">
-                  <span className="text-[10px] font-extrabold text-slate-400 tracking-wider uppercase shrink-0">Site Web</span>
-                  <a 
-                    href={company.has_website ? (company.has_website.startsWith('http') ? company.has_website : `https://${company.has_website}`) : '#'} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-sm font-extrabold text-[#0f766e] hover:text-[#0d635c] transition-colors underline decoration-[#0f766e] decoration-2 underline-offset-4"
-                  >
-                    {company.has_website || 'www.ice-solutions.tech'}
-                  </a>
+                {/* Activité */}
+                <div className="flex flex-col gap-1 py-1">
+                  <span className="text-[10px] font-extrabold text-slate-400 tracking-wider uppercase">Activité</span>
+                  <span className="text-base md:text-lg font-extrabold text-slate-900">
+                    {company.sector || '-'}
+                  </span>
                 </div>
 
                 {/* Plateformes connectées */}

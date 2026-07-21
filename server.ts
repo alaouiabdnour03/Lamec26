@@ -312,7 +312,7 @@ async function startServer() {
               <p><strong>ICE :</strong> ${ice}</p>
               <p><strong>Code d'accès :</strong> <span style="font-family: monospace; font-size: 18px; font-weight: bold; background-color: #eef4ff; padding: 4px 8px; border-radius: 4px;">${accessCode}</span></p>
             </div>
-            <p>Vous pouvez vous connecter à votre Espace Client pour suivre l'état d'avancement de votre dossier. Nous vous invitons également à y compléter dès maintenant votre <strong>Diagnostic de Conformité & Cadrage Métier</strong>, étape indispensable pour finaliser l'évaluation de votre éligibilité.</p>
+            <p>Vous pouvez vous connecter à votre Espace Client pour suivre l'état d'avancement de votre dossier. Nous vous invitons également à y compléter dès maintenant votre <strong>Cadrage & Métiers</strong>, étape indispensable pour finaliser l'évaluation de votre éligibilité.</p>
             <p>Cordialement,<br>L'équipe La MEC</p>
           </div>
         `
@@ -338,7 +338,7 @@ async function startServer() {
               <li><strong>Plateformes:</strong> ${platforms}</li>
               <li><strong>Besoins:</strong> ${needs ? needs.join(', ') : ''}</li>
             </ul>
-            <p>Un nouvel accès Espace Client a été configuré pour ce candidat (Code d'accès : <strong>${accessCode}</strong>). Vous recevrez une notification complète dès qu'il aura soumis son Diagnostic de Conformité & Cadrage Métier.</p>
+            <p>Un nouvel accès Espace Client a été configuré pour ce candidat (Code d'accès : <strong>${accessCode}</strong>). Vous recevrez une notification complète dès qu'il aura soumis son Cadrage & Métiers.</p>
           </div>
         `
       });
