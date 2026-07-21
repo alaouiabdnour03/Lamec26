@@ -129,6 +129,7 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
   const [uploadStatus, setUploadStatus] = useState<string>('');
   const [uploading, setUploading] = useState(false);
   const [accessCode, setAccessCode] = useState('');
+  const [validationError, setValidationError] = useState<string>('');
   
   const resolveActivityLabel = () => {
     if (customActivity.trim()) return customActivity.trim();
@@ -194,15 +195,7 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
     if (step === 2) {
       await evaluateEligibility();
     }
-    if (step === 5 && !pack) {
-      alert("Veuillez sélectionner un pack d'accompagnement.");
-      return;
-    }
-    if (step === 6 && !fileRC) {
-      alert('Veuillez joindre le Registre de commerce.');
-      return;
-    }
-    if (step < 7) setStep(step + 1);
+    if (step < 4) setStep(step + 1);
   };
 
   const generateAccessCode = () => {
@@ -217,12 +210,13 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
   };
 
   const submitToSupabase = async () => {
+    setValidationError('');
+    if (!fileRC) {
+      setValidationError("Le Registre de commerce * est un champ obligatoire pour procéder.");
+      return;
+    }
     setUploading(true);
     setUploadStatus('Vérification et création du dossier…');
-
-    let finalMontant = 0;
-    if (pack === 'PACK I : IMMERSION DIGITALE') finalMontant = 27000;
-    if (pack === 'PACK II : EXCELLENCE VISUELLE') finalMontant = 40500;
 
     try {
       const { data: existingCompany, error: companyError } = await supabase
@@ -263,9 +257,9 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
         .insert({
           entreprise_id: company.id,
           programme: eligibilityResult?.program || 'Go Siyaha',
-          pack: pack,
-          montant: finalMontant,
-          statut: 'En cours',
+          pack: 'À déterminer',
+          montant: 0,
+          statut: 'En attente de diagnostic',
           access_code: generatedCode,
           needs: needs.join(', ')
         });
@@ -289,8 +283,8 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
             ice,
             companyName,
             accessCode: generatedCode,
-            pack: pack,
-            montant: finalMontant,
+            pack: 'À déterminer',
+            montant: 0,
             phone,
             cnssEmployees,
             ca,
@@ -305,47 +299,45 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
       }
 
       setUploadStatus('Dossier soumis avec succès !');
-      setStep(7); 
+      setStep(5); 
     } catch (error: any) {
       setUploadStatus(`Erreur : ${error.message}`);
     }
     setUploading(false);
   };
 
-  const TOTAL_STEPS = 6;
+  const TOTAL_STEPS = 4;
   const WIZARD_TITLES = [
     "Identification de l'établissement",
     "Secteur & Activité",
-    "Analyse & Éligibilité",
     "Besoins & Présence Digitale",
-    "Pack d'accompagnement",
     "Pièces Jointes"
   ];
 
   const showCustomActivity = sector === 'autre' || activity === 'autre-tourisme' || activity === 'autre-commerce';
 
   return (
-    <div className="flex items-center justify-center w-full text-[#123]">
-      <div className="w-full max-w-[800px] bg-white rounded-3xl shadow-[0_20px_50px_rgba(18,35,51,0.05)] overflow-hidden border border-gray-100">
-        {step < 7 && (
-          <div className="p-8 md:p-10 border-b border-gray-50">
+    <div className="flex items-center justify-center w-full text-slate-800 font-sans">
+      <div className="w-full max-w-[800px] bg-white rounded-3xl shadow-[0_20px_50px_rgba(15,118,110,0.05)] overflow-hidden border border-slate-100/80">
+        {step < 5 && (
+          <div className="p-8 md:p-10 border-b border-slate-100/60">
             <header className="flex flex-col md:flex-row justify-between gap-4 items-start mb-6">
               <div>
-                <p className="text-[#52B788] uppercase tracking-[0.14em] text-[0.7rem] font-bold mb-2">
+                <p className="text-[#0f766e] uppercase tracking-[0.14em] text-[0.7rem] font-extrabold mb-2">
                   FORMULAIRE D'ÉLIGIBILITÉ
                 </p>
-                <h1 className="text-2xl md:text-3xl font-sans font-bold text-gray-900">
+                <h1 className="text-2xl md:text-3xl font-sans font-extrabold text-slate-950 tracking-tight">
                   {step}. {WIZARD_TITLES[step - 1]}
                 </h1>
               </div>
-              <div className="bg-green-50 text-[#52B788] py-2 px-4 rounded-full font-bold whitespace-nowrap text-sm border border-green-100">
+              <div className="bg-teal-50/60 text-[#0f766e] py-2 px-4 rounded-full font-bold whitespace-nowrap text-xs border border-teal-100/60 uppercase tracking-wider">
                 Étape {step} / {TOTAL_STEPS}
               </div>
             </header>
 
-            <div className="h-2 bg-[#ebeff7] rounded-full overflow-hidden">
+            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
               <div
-                className="h-full bg-[#52B788] transition-all duration-500 ease-out"
+                className="h-full bg-[#0f766e] transition-all duration-500 ease-out"
                 style={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
               />
             </div>
@@ -356,35 +348,35 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
           {step === 1 && (
             <div className="animate-in fade-in slide-in-from-right-4 duration-500">
               <div className="grid gap-5 md:grid-cols-2">
-                <label className="flex flex-col gap-2 font-semibold text-gray-700 text-sm">
+                <label className="flex flex-col gap-2 font-bold text-slate-700 text-sm">
                   <span>Raison Sociale</span>
-                  <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="border border-[#dbe3f0] bg-gray-50 rounded-xl p-3.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#52B788]/30 focus:border-[#52B788] transition-all" required />
+                  <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="border border-slate-200 bg-slate-50 rounded-xl p-3.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f766e]/20 focus:border-[#0f766e] transition-all font-semibold" required />
                 </label>
-                <label className="flex flex-col gap-2 font-semibold text-gray-700 text-sm">
+                <label className="flex flex-col gap-2 font-bold text-slate-700 text-sm">
                   <span>ICE (Identifiant Fiscal)</span>
-                  <input type="text" value={ice} onChange={(e) => setIce(e.target.value)} className="border border-[#dbe3f0] bg-gray-50 rounded-xl p-3.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#52B788]/30 focus:border-[#52B788] transition-all" required />
+                  <input type="text" value={ice} onChange={(e) => setIce(e.target.value)} className="border border-slate-200 bg-slate-50 rounded-xl p-3.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f766e]/20 focus:border-[#0f766e] transition-all font-semibold" required />
                 </label>
-                <label className="flex flex-col gap-2 font-semibold text-gray-700 text-sm">
+                <label className="flex flex-col gap-2 font-bold text-slate-700 text-sm">
                   <span>N° CNSS & Effectif</span>
-                  <input type="text" value={cnssEmployees} onChange={(e) => setCnssEmployees(e.target.value)} className="border border-[#dbe3f0] bg-gray-50 rounded-xl p-3.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#52B788]/30 focus:border-[#52B788] transition-all" required />
+                  <input type="text" value={cnssEmployees} onChange={(e) => setCnssEmployees(e.target.value)} className="border border-slate-200 bg-slate-50 rounded-xl p-3.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f766e]/20 focus:border-[#0f766e] transition-all font-semibold" required />
                 </label>
-                <label className="flex flex-col gap-2 font-semibold text-gray-700 text-sm">
+                <label className="flex flex-col gap-2 font-bold text-slate-700 text-sm">
                   <span>Email de contact</span>
-                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="border border-[#dbe3f0] bg-gray-50 rounded-xl p-3.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#52B788]/30 focus:border-[#52B788] transition-all" required />
+                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="border border-slate-200 bg-slate-50 rounded-xl p-3.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f766e]/20 focus:border-[#0f766e] transition-all font-semibold" required />
                 </label>
-                <label className="flex flex-col gap-2 font-semibold text-gray-700 text-sm">
+                <label className="flex flex-col gap-2 font-bold text-slate-700 text-sm">
                   <span>Téléphone</span>
-                  <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="border border-[#dbe3f0] bg-gray-50 rounded-xl p-3.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#52B788]/30 focus:border-[#52B788] transition-all" required />
+                  <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="border border-slate-200 bg-slate-50 rounded-xl p-3.5 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f766e]/20 focus:border-[#0f766e] transition-all font-semibold" required />
                 </label>
-                <label className="flex flex-col gap-3 font-semibold text-gray-700 text-sm">
+                <label className="flex flex-col gap-3 font-bold text-slate-700 text-sm">
                   <span>Tranche CA Annuel</span>
                   <div className="flex gap-6 mt-1">
-                    <label className="flex items-center gap-2 cursor-pointer font-medium hover:text-[#52B788] transition-colors">
-                      <input type="radio" name="ca" value="< 10M MAD" checked={ca === '< 10M MAD'} onChange={(e) => setCa(e.target.value)} className="w-5 h-5 accent-[#52B788] text-[#52B788] focus:ring-[#52B788]" />
+                    <label className="flex items-center gap-2 cursor-pointer font-bold hover:text-[#0f766e] transition-colors">
+                      <input type="radio" name="ca" value="< 10M MAD" checked={ca === '< 10M MAD'} onChange={(e) => setCa(e.target.value)} className="w-5 h-5 accent-[#0f766e] text-[#0f766e] focus:ring-[#0f766e]" />
                       &lt; 10M MAD
                     </label>
-                    <label className="flex items-center gap-2 cursor-pointer font-medium hover:text-[#52B788] transition-colors">
-                      <input type="radio" name="ca" value="> 10M MAD" checked={ca === '> 10M MAD'} onChange={(e) => setCa(e.target.value)} className="w-5 h-5 accent-[#52B788] text-[#52B788] focus:ring-[#52B788]" />
+                    <label className="flex items-center gap-2 cursor-pointer font-bold hover:text-[#0f766e] transition-colors">
+                      <input type="radio" name="ca" value="> 10M MAD" checked={ca === '> 10M MAD'} onChange={(e) => setCa(e.target.value)} className="w-5 h-5 accent-[#0f766e] text-[#0f766e] focus:ring-[#0f766e]" />
                       &gt; 10M MAD
                     </label>
                   </div>
@@ -395,7 +387,7 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
 
           {step === 2 && (
             <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-              <h2 className="text-sm font-bold mb-4 uppercase text-gray-500 tracking-wider">Sélectionnez votre secteur</h2>
+              <h2 className="text-xs font-extrabold mb-4 uppercase text-slate-400 tracking-wider">Sélectionnez votre secteur</h2>
               <div className="grid gap-3 md:grid-cols-3 mb-8">
                 {SECTORS.map((s) => (
                   <button
@@ -405,10 +397,10 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
                       setActivity('');
                       setCustomActivity('');
                     }}
-                    className={`text-center border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 font-bold ${
+                    className={`text-center border rounded-xl p-4 cursor-pointer transition-all duration-200 font-extrabold text-sm ${
                       sector === s.id
-                        ? 'border-[#52B788] bg-green-50 text-[#1B2A4A]'
-                        : 'border-[#dbe3f0] text-gray-700 hover:border-gray-300'
+                        ? 'border-[#0f766e] bg-teal-50/50 text-[#0f766e] ring-1 ring-[#0f766e]'
+                        : 'border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50/50'
                     }`}
                   >
                     {s.label}
@@ -418,7 +410,7 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
 
               {sector && (
                 <div className="animate-in fade-in duration-300">
-                  <h2 className="text-sm font-bold mb-4 uppercase text-gray-500 tracking-wider">Précisez votre activité</h2>
+                  <h2 className="text-xs font-extrabold mb-4 uppercase text-slate-400 tracking-wider">Précisez votre activité</h2>
                   <div className="grid gap-3 md:grid-cols-2 mb-4">
                     {ACTIVITIES[sector]?.map((a) => (
                       <button
@@ -427,10 +419,10 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
                           setActivity(a.id);
                           setCustomActivity('');
                         }}
-                        className={`text-left border-2 rounded-xl p-4 cursor-pointer transition-all duration-200 font-medium ${
+                        className={`text-left border rounded-xl p-4 cursor-pointer transition-all duration-200 font-bold text-sm ${
                           activity === a.id
-                            ? 'border-[#52B788] bg-green-50 text-[#1B2A4A]'
-                            : 'border-[#dbe3f0] text-gray-700 hover:border-gray-300'
+                            ? 'border-[#0f766e] bg-teal-50/50 text-[#0f766e] ring-1 ring-[#0f766e]'
+                            : 'border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50/50'
                         }`}
                       >
                         {a.label}
@@ -438,14 +430,14 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
                     ))}
                   </div>
                   {showCustomActivity && (
-                    <label className="flex flex-col gap-2 font-semibold text-gray-800 animate-in fade-in mt-4">
+                    <label className="flex flex-col gap-2 font-bold text-slate-700 animate-in fade-in mt-4 text-sm">
                       <span>Décrivez votre activité</span>
                       <textarea
                         rows={3}
                         value={customActivity}
                         onChange={(e) => setCustomActivity(e.target.value)}
                         placeholder="Ex: Organisation d'excursions..."
-                        className="border border-[#dbe3f0] rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#52B788]/30 focus:border-[#52B788] bg-gray-50"
+                        className="border border-slate-200 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-[#0f766e]/20 focus:border-[#0f766e] bg-slate-50 font-semibold"
                       />
                     </label>
                   )}
@@ -456,79 +448,27 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
 
           {step === 3 && (
             <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-              {classificationLoading ? (
-                <div className="py-12 flex flex-col items-center justify-center text-center">
-                  <Loader2 className="w-12 h-12 animate-spin text-[#52B788] mb-4" />
-                  <p className="text-lg font-medium text-gray-700">{classificationStatus}</p>
-                </div>
-              ) : eligibilityResult ? (
-                <div className="space-y-6">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#e7fff3] text-[#16784b] font-bold text-sm">
-                    ✓ Éligible au financement
-                  </div>
-                  <div className="bg-green-50/50 border border-green-100 rounded-2xl p-6">
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center py-2 border-b border-green-100/50">
-                        <strong className="text-gray-700">Activité reconnue</strong>
-                        <span className="font-bold text-gray-900">{eligibilityResult.activityLabel}</span>
-                      </div>
-                      <div className="flex justify-between items-center py-2 border-b border-green-100/50">
-                        <strong className="text-gray-700">Programme suggéré</strong>
-                        <span className="font-bold text-gray-900">{eligibilityResult.program}</span>
-                      </div>
-                      <div className="flex justify-between items-center py-2 border-b border-green-100/50">
-                        <strong className="text-gray-700">Taux de subvention IA</strong>
-                        <span className="font-bold text-[#16784b]">Jusqu'à 90%</span>
-                      </div>
-                      <div className="flex justify-between items-center py-2 border-b border-green-100/50">
-                        <strong className="text-gray-700">Montant HT estimé</strong>
-                        <span className="font-bold text-gray-900">{eligibilityResult.montantHt.toLocaleString('fr-MA')} DHS</span>
-                      </div>
-                      <div className="flex justify-between items-center py-2 border-b border-green-100/50">
-                        <strong className="text-gray-700">Subvention estimée</strong>
-                        <span className="font-bold text-[#16784b]">{eligibilityResult.subvention.toLocaleString('fr-MA')} DHS</span>
-                      </div>
-                      <div className="flex justify-between items-center py-2">
-                        <strong className="text-gray-700">Reste à charge</strong>
-                        <span className="font-bold text-gray-900">{eligibilityResult.reste.toLocaleString('fr-MA')} DHS</span>
-                      </div>
-                    </div>
-                    {eligibilityResult.classification && (
-                      <p className="mt-6 text-sm text-gray-500 bg-white p-3 rounded-lg border border-gray-100">
-                        Classification IA : {eligibilityResult.classification.sector} ({eligibilityResult.classification.confidence}%)
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <p>Aucun résultat trouvé.</p>
-              )}
-            </div>
-          )}
-
-          {step === 4 && (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-              <div className="space-y-8">
+              <div className="space-y-8 font-sans">
                 <div>
-                  <h3 className="text-sm font-bold uppercase text-gray-700 tracking-wider mb-4">
+                  <h3 className="text-xs font-extrabold uppercase text-slate-400 tracking-wider mb-4">
                     Présence Digitale
                   </h3>
                   <div className="space-y-4">
-                    <p className="font-semibold text-gray-700 text-sm">Avez-vous un site web ?</p>
+                    <p className="font-bold text-slate-700 text-sm">Avez-vous un site web ?</p>
                     <div className="flex gap-6">
-                      <button onClick={() => setHasWebsite('Oui')} className={`flex-1 py-3 px-6 rounded-xl border-2 transition-all font-bold ${hasWebsite === 'Oui' ? 'border-[#52B788] bg-green-50 text-[#1B2A4A]' : 'border-[#dbe3f0] bg-gray-50 text-gray-600'}`}>Oui</button>
-                      <button onClick={() => setHasWebsite('Non')} className={`flex-1 py-3 px-6 rounded-xl border-2 transition-all font-bold ${hasWebsite === 'Non' ? 'border-[#52B788] bg-green-50 text-[#1B2A4A]' : 'border-[#dbe3f0] bg-gray-50 text-gray-600'}`}>Non</button>
+                      <button onClick={() => setHasWebsite('Oui')} className={`flex-1 py-3 px-6 rounded-xl border transition-all font-bold text-sm cursor-pointer ${hasWebsite === 'Oui' ? 'border-[#0f766e] bg-teal-50/50 text-[#0f766e] ring-1 ring-[#0f766e]' : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100/50'}`}>Oui</button>
+                      <button onClick={() => setHasWebsite('Non')} className={`flex-1 py-3 px-6 rounded-xl border transition-all font-bold text-sm cursor-pointer ${hasWebsite === 'Non' ? 'border-[#0f766e] bg-teal-50/50 text-[#0f766e] ring-1 ring-[#0f766e]' : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100/50'}`}>Non</button>
                     </div>
                   </div>
                   
-                  <label className="flex flex-col gap-2 font-semibold text-gray-700 text-sm mt-5">
+                  <label className="flex flex-col gap-2 font-bold text-slate-700 text-sm mt-5">
                     <span>Plateformes de vente (Booking, Airbnb, etc.)</span>
-                    <input type="text" value={platforms} onChange={(e) => setPlatforms(e.target.value)} placeholder="Ex: Booking, Airbnb, Agence de voyage..." className="border border-[#dbe3f0] bg-gray-50 rounded-xl p-3 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#52B788]/30 focus:border-[#52B788] transition-all" />
+                    <input type="text" value={platforms} onChange={(e) => setPlatforms(e.target.value)} placeholder="Ex: Booking, Airbnb, Agence de voyage..." className="border border-slate-200 bg-slate-50 rounded-xl p-3 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0f766e]/20 focus:border-[#0f766e] transition-all font-semibold" />
                   </label>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-bold uppercase text-gray-700 tracking-wider mb-4">
+                  <h3 className="text-xs font-extrabold uppercase text-slate-400 tracking-wider mb-4">
                     Vos Besoins Prioritaires
                   </h3>
                   <div className="grid gap-3">
@@ -541,9 +481,9 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
                     ].map(need => {
                       const isSelected = needs.includes(need);
                       return (
-                        <label key={need} className={`flex items-start gap-3 cursor-pointer p-3 rounded-xl border-2 transition-all duration-200 ${isSelected ? 'border-[#52B788] bg-green-50' : 'border-[#dbe3f0] bg-gray-50'}`}>
-                          <input type="checkbox" checked={isSelected} onChange={(e) => { if (e.target.checked) setNeeds([...needs, need]); else setNeeds(needs.filter(n => n !== need)); }} className="w-5 h-5 mt-0.5 rounded border-gray-300 text-[#52B788] accent-[#52B788] focus:ring-[#52B788]" />
-                          <span className={`leading-snug text-sm font-medium ${isSelected ? 'text-[#1B2A4A]' : 'text-gray-700'}`}>{need}</span>
+                        <label key={need} className={`flex items-start gap-3 cursor-pointer p-3.5 rounded-xl border transition-all duration-200 ${isSelected ? 'border-[#0f766e] bg-teal-50/40' : 'border-slate-200 bg-slate-50'}`}>
+                          <input type="checkbox" checked={isSelected} onChange={(e) => { if (e.target.checked) setNeeds([...needs, need]); else setNeeds(needs.filter(n => n !== need)); }} className="w-5 h-5 mt-0.5 rounded border-slate-300 text-[#0f766e] accent-[#0f766e] focus:ring-[#0f766e]" />
+                          <span className={`leading-snug text-sm font-semibold ${isSelected ? 'text-slate-900 font-bold' : 'text-slate-600'}`}>{need}</span>
                         </label>
                       )
                     })}
@@ -553,102 +493,74 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
             </div>
           )}
 
-          {step === 5 && (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-              <h3 className="text-sm font-bold uppercase text-gray-700 tracking-wider mb-4">
-                Sélectionnez le pack d'accompagnement
-              </h3>
-              <div className="space-y-4">
-                {[
-                  { id: 'PACK I : IMMERSION DIGITALE', charge: '3 000' },
-                  { id: 'PACK II : EXCELLENCE VISUELLE', charge: '4 500' }
-                ].map(p => (
-                  <button
-                    key={p.id}
-                    onClick={() => setPack(p.id)}
-                    className={`w-full text-left flex items-center gap-5 p-6 rounded-2xl border-2 transition-all duration-200 ${
-                      pack === p.id 
-                        ? 'border-[#52B788] bg-green-50 shadow-md' 
-                        : 'border-[#dbe3f0] bg-gray-50 hover:border-gray-300 hover:shadow-sm'
-                    }`}
-                  >
-                    <div className="flex-1">
-                      <div className="font-bold text-gray-900 text-lg mb-1">{p.id.split(' (')[0]}</div>
-                      <div className="text-gray-500 font-medium text-sm bg-white inline-block px-3 py-1 rounded-full border border-gray-200">
-                        Reste à charge : {p.charge} MAD HT
-                      </div>
-                    </div>
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${pack === p.id ? 'border-[#52B788] bg-[#52B788]' : 'border-gray-300'}`}>
-                      {pack === p.id && <div className="w-2 h-2 rounded-full bg-white" />}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {step === 6 && (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+          {step === 4 && (
+            <div className="animate-in fade-in slide-in-from-right-4 duration-500 font-sans">
               
+              {validationError && (
+                <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-700 rounded-2xl text-xs font-bold flex items-center gap-2">
+                  <span>{validationError}</span>
+                </div>
+              )}
+
               <div className="space-y-6">
                 
                 {/* Statuts */}
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#475569]">Statuts de l'entreprise</label>
-                  <label className="flex items-center justify-between border border-[#e2e8f0] rounded-xl p-3 bg-[#f8fafc] cursor-pointer hover:border-[#cbd5e1] hover:bg-white transition-colors">
-                    <span className="text-sm text-gray-400 font-medium truncate flex-1">
-                      {fileStatuts ? fileStatuts.name : "Sélectionner un fichier (Optionnel)"}
+                  <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Statuts de l'entreprise</label>
+                  <label className="flex items-center justify-between border border-slate-200 rounded-xl p-3 bg-slate-50 cursor-pointer hover:border-slate-300 hover:bg-white transition-colors">
+                    <span className="text-sm text-slate-400 font-semibold truncate flex-1">
+                      {fileStatuts ? fileStatuts.name : "Sélectionner un fichier"}
                     </span>
-                    <Upload className="w-4 h-4 text-gray-400" />
-                    <input type="file" className="hidden" onChange={(e) => e.target.files && setFileStatuts(e.target.files[0])} />
+                    <Upload className="w-4 h-4 text-slate-400" />
+                    <input type="file" className="hidden" onChange={(e) => { e.target.files && setFileStatuts(e.target.files[0]); setValidationError(''); }} />
                   </label>
                 </div>
 
                 {/* RC */}
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#475569]">Registre de commerce <span className="text-red-500">*</span></label>
-                  <label className="flex items-center justify-between border border-[#e2e8f0] rounded-xl p-3 bg-[#f8fafc] cursor-pointer hover:border-[#cbd5e1] hover:bg-white transition-colors">
-                    <span className={`text-sm font-medium truncate flex-1 ${fileRC ? 'text-gray-900' : 'text-gray-400'}`}>
+                  <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Registre de commerce <span className="text-red-500">*</span></label>
+                  <label className={`flex items-center justify-between border rounded-xl p-3 bg-slate-50 cursor-pointer hover:bg-white transition-colors ${validationError ? 'border-red-300 ring-2 ring-red-100' : 'border-slate-200 hover:border-slate-300'}`}>
+                    <span className={`text-sm font-semibold truncate flex-1 ${fileRC ? 'text-slate-900 font-bold' : 'text-slate-400'}`}>
                       {fileRC ? fileRC.name : "Sélectionner un fichier"}
                     </span>
-                    <Upload className="w-4 h-4 text-gray-400" />
-                    <input type="file" className="hidden" onChange={(e) => e.target.files && setFileRC(e.target.files[0])} />
+                    <Upload className="w-4 h-4 text-slate-400" />
+                    <input type="file" className="hidden" onChange={(e) => { e.target.files && setFileRC(e.target.files[0]); setValidationError(''); }} />
                   </label>
                 </div>
 
                 {/* Régularité fiscale */}
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#475569]">Régularité fiscale</label>
-                  <label className="flex items-center justify-between border border-[#e2e8f0] rounded-xl p-3 bg-[#f8fafc] cursor-pointer hover:border-[#cbd5e1] hover:bg-white transition-colors">
-                    <span className="text-sm text-gray-400 font-medium truncate flex-1">
-                      {fileFiscale ? fileFiscale.name : "Sélectionner un fichier (Optionnel)"}
+                  <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Régularité fiscale</label>
+                  <label className="flex items-center justify-between border border-slate-200 rounded-xl p-3 bg-slate-50 cursor-pointer hover:border-slate-300 hover:bg-white transition-colors">
+                    <span className="text-sm text-slate-400 font-semibold truncate flex-1">
+                      {fileFiscale ? fileFiscale.name : "Sélectionner un fichier"}
                     </span>
-                    <Upload className="w-4 h-4 text-gray-400" />
-                    <input type="file" className="hidden" onChange={(e) => e.target.files && setFileFiscale(e.target.files[0])} />
+                    <Upload className="w-4 h-4 text-slate-400" />
+                    <input type="file" className="hidden" onChange={(e) => { e.target.files && setFileFiscale(e.target.files[0]); setValidationError(''); }} />
                   </label>
                 </div>
 
                 {/* CNSS */}
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#475569]">Régularité de soumission CNSS</label>
-                  <label className="flex items-center justify-between border border-[#e2e8f0] rounded-xl p-3 bg-[#f8fafc] cursor-pointer hover:border-[#cbd5e1] hover:bg-white transition-colors">
-                    <span className="text-sm text-gray-400 font-medium truncate flex-1">
-                      {fileCnss ? fileCnss.name : "Sélectionner un fichier (Optionnel)"}
+                  <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Régularité de soumission CNSS</label>
+                  <label className="flex items-center justify-between border border-slate-200 rounded-xl p-3 bg-slate-50 cursor-pointer hover:border-slate-300 hover:bg-white transition-colors">
+                    <span className="text-sm text-slate-400 font-semibold truncate flex-1">
+                      {fileCnss ? fileCnss.name : "Sélectionner un fichier"}
                     </span>
-                    <Upload className="w-4 h-4 text-gray-400" />
-                    <input type="file" className="hidden" onChange={(e) => e.target.files && setFileCnss(e.target.files[0])} />
+                    <Upload className="w-4 h-4 text-slate-400" />
+                    <input type="file" className="hidden" onChange={(e) => { e.target.files && setFileCnss(e.target.files[0]); setValidationError(''); }} />
                   </label>
                 </div>
 
                 {/* Bilan */}
                 <div className="space-y-2">
-                  <label className="text-sm font-bold text-[#475569]">Bilan des 2 années passées</label>
-                  <label className="flex items-center justify-between border border-[#e2e8f0] rounded-xl p-3 bg-[#f8fafc] cursor-pointer hover:border-[#cbd5e1] hover:bg-white transition-colors">
-                    <span className="text-sm text-gray-400 font-medium truncate flex-1">
-                      {fileBilan ? fileBilan.name : "Sélectionner un fichier (Optionnel)"}
+                  <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Bilan des 2 années passées</label>
+                  <label className="flex items-center justify-between border border-slate-200 rounded-xl p-3 bg-slate-50 cursor-pointer hover:border-slate-300 hover:bg-white transition-colors">
+                    <span className="text-sm text-slate-400 font-semibold truncate flex-1">
+                      {fileBilan ? fileBilan.name : "Sélectionner un fichier"}
                     </span>
-                    <Upload className="w-4 h-4 text-gray-400" />
-                    <input type="file" className="hidden" onChange={(e) => e.target.files && setFileBilan(e.target.files[0])} />
+                    <Upload className="w-4 h-4 text-slate-400" />
+                    <input type="file" className="hidden" onChange={(e) => { e.target.files && setFileBilan(e.target.files[0]); setValidationError(''); }} />
                   </label>
                 </div>
 
@@ -656,7 +568,7 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
 
               {uploadStatus && (
                 <div className="mt-6 text-center">
-                  <p className="text-sm font-bold bg-blue-50 text-blue-700 p-4 rounded-xl inline-block w-full">
+                  <p className="text-sm font-bold bg-teal-50 text-[#0f766e] border border-teal-100 p-4 rounded-xl inline-block w-full">
                     {uploadStatus}
                   </p>
                 </div>
@@ -664,41 +576,41 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
             </div>
           )}
 
-          {step === 7 && (
-            <div className="animate-in fade-in zoom-in-95 duration-500 text-center py-6">
-              <div className="w-24 h-24 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-5xl mx-auto mb-6 shadow-inner">
+          {step === 5 && (
+            <div className="animate-in fade-in zoom-in-95 duration-500 text-center py-6 font-sans">
+              <div className="w-20 h-20 bg-teal-100 text-[#0f766e] rounded-full flex items-center justify-center text-4xl mx-auto mb-6 shadow-inner font-bold">
                 ✓
               </div>
-              <h2 className="text-3xl font-bold mb-4 text-gray-900">Dossier soumis avec succès !</h2>
-              <p className="text-gray-600 mb-8 text-lg">
-                Un email de confirmation a été envoyé à <strong className="text-gray-900">{email}</strong>.
+              <h2 className="text-2xl md:text-3xl font-extrabold mb-4 text-slate-900 tracking-tight">Dossier soumis avec succès !</h2>
+              <p className="text-slate-500 mb-8 text-base">
+                Un email de confirmation a été envoyé à <strong className="text-slate-800">{email}</strong>.
               </p>
 
-              <div className="bg-gray-50 border border-gray-200 rounded-3xl p-8 text-left mb-6">
-                <p className="text-sm uppercase tracking-widest text-gray-500 font-bold mb-4 text-center">Votre code d'accès sécurisé</p>
-                <div className="bg-white border-2 border-gray-200 rounded-2xl p-6 flex justify-center items-center shadow-sm">
-                  <code className="text-4xl font-mono font-bold text-[#52B788] tracking-[0.2em]">
+              <div className="bg-slate-50 border border-slate-100 rounded-3xl p-8 text-left mb-6">
+                <p className="text-xs uppercase tracking-widest text-slate-400 font-extrabold mb-4 text-center">Votre code d'accès sécurisé</p>
+                <div className="bg-white border border-slate-100 rounded-2xl p-6 flex justify-center items-center shadow-sm">
+                  <code className="text-3xl md:text-4xl font-mono font-extrabold text-[#0f766e] tracking-[0.2em]">
                     {accessCode}
                   </code>
                 </div>
-                <p className="text-sm text-gray-500 mt-5 leading-relaxed text-center font-medium">
+                <p className="text-xs text-slate-400 mt-5 leading-relaxed text-center font-bold">
                   Notez précieusement ce code et votre numéro d'ICE. Ils vous seront demandés pour vous connecter.
                 </p>
               </div>
 
               {/* Action Requise CTA */}
-              <div className="bg-[#FAFCFA] border-2 border-dashed border-[#52B788]/40 rounded-3xl p-8 text-left space-y-6">
-                <div className="flex items-center gap-2">
-                  <span className="flex h-2.5 w-2.5 relative">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#52B788] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#52B788]"></span>
+              <div className="bg-teal-50/30 border border-teal-100/80 rounded-3xl p-8 text-center space-y-6 flex flex-col items-center justify-center">
+                <div className="flex items-center justify-center gap-2">
+                  <span className="flex h-2 w-2 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0f766e] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#0f766e]"></span>
                   </span>
-                  <p className="text-xs uppercase tracking-wider text-[#52B788] font-extrabold">Action requise immédiatement</p>
+                  <p className="text-[10px] uppercase tracking-wider text-[#0f766e] font-extrabold">Action requise immédiatement</p>
                 </div>
                 
-                <div className="space-y-2">
-                  <h4 className="text-lg font-bold text-gray-900">Compléter le Diagnostic & Cadrage Métier</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">
+                <div className="space-y-2 text-center max-w-xl">
+                  <h4 className="text-lg font-bold text-slate-900">Compléter le Diagnostic & Cadrage Métier</h4>
+                  <p className="text-xs text-slate-500 leading-relaxed font-semibold">
                     Pour valider définitivement votre éligibilité et permettre à nos équipes de configurer vos futurs outils de planification, veuillez vous connecter dès maintenant à l'Espace Client afin de remplir le diagnostic complet.
                   </p>
                 </div>
@@ -706,7 +618,7 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
                 {onNavigateToEspaceClient && (
                   <button 
                     onClick={onNavigateToEspaceClient}
-                    className="w-full sm:w-auto bg-[#1B2A4A] text-white hover:bg-black px-6 py-3.5 rounded-xl font-bold text-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer group"
+                    className="w-full sm:w-auto bg-[#0f766e] text-white hover:bg-[#0d635c] px-6 py-3.5 rounded-xl font-bold text-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer group mx-auto"
                   >
                     <span>Accéder à l'Espace Client</span>
                     <span className="group-hover:translate-x-0.5 transition-transform">→</span>
@@ -717,12 +629,12 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
           )}
 
           {/* Navigation Footer */}
-          {step < 7 && (
-            <footer className="flex justify-between items-center mt-10 pt-6 border-t border-gray-100 gap-4">
+          {step < 5 && (
+            <footer className="flex justify-between items-center mt-10 pt-6 border-t border-slate-100 gap-4 font-sans">
               <button
                 onClick={() => setStep(step - 1)}
-                disabled={step === 1 || uploading || (step === 3 && classificationLoading)}
-                className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-gray-900 px-5 py-3 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-30 disabled:hover:bg-transparent"
+                disabled={step === 1 || uploading}
+                className="flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-slate-800 px-5 py-3 rounded-xl hover:bg-slate-50 transition-colors disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" /> Précédent
               </button>
@@ -730,16 +642,24 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
               {step < TOTAL_STEPS ? (
                 <button
                   onClick={handleNext}
-                  disabled={step === 3 && classificationLoading}
-                  className="flex items-center gap-2 bg-[#52B788] text-white rounded-xl py-3 px-8 font-bold hover:bg-[#429d73] transition-colors shadow-md shadow-green-200/50 disabled:opacity-50"
+                  disabled={classificationLoading}
+                  className="flex items-center gap-2 bg-[#0f766e] hover:bg-[#0d635c] text-white rounded-xl py-3 px-8 font-bold text-xs uppercase tracking-wider transition-colors shadow-md shadow-teal-100 disabled:opacity-50 cursor-pointer"
                 >
-                  Suivant <ArrowRight className="w-4 h-4" />
+                  {classificationLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" /> Analyse...
+                    </>
+                  ) : (
+                    <>
+                      Suivant <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               ) : (
                 <button
                   onClick={submitToSupabase}
                   disabled={uploading}
-                  className="flex items-center gap-2 bg-[#123] text-white rounded-xl py-3 px-8 font-bold hover:bg-black transition-colors shadow-lg disabled:opacity-70"
+                  className="flex items-center gap-2 bg-[#0f766e] hover:bg-[#0d635c] text-white rounded-xl py-3 px-8 font-bold text-xs uppercase tracking-wider transition-colors shadow-md shadow-teal-100 disabled:opacity-70 cursor-pointer"
                 >
                   {uploading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
                   Soumettre le dossier
@@ -752,3 +672,4 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
     </div>
   );
 }
+
