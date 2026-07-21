@@ -66,7 +66,12 @@ export default function App() {
 						style={{ backgroundImage: 'radial-gradient(circle at 85% 40%, rgba(245, 158, 11, 0.3) 0%, rgba(245, 158, 11, 0.12) 25%, rgba(245, 158, 11, 0.03) 50%, transparent 80%), url(https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/9m5pohjl_expires_30_days.png)' }}>
 						<div className="w-full max-w-7xl mx-auto flex flex-col items-start relative">
 							
-							<div className="w-full flex flex-row justify-between items-start mb-12">
+							<motion.div 
+								initial={{ opacity: 0, y: -20 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ duration: 0.6, ease: "easeOut" }}
+								className="w-full flex flex-row justify-between items-start mb-12"
+							>
 								<div className="flex flex-col">
 									<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/me08pjb3_expires_30_days.png" className="w-[67px] h-12 object-contain mb-4" alt="Logo" />
 									<span className="text-[#1B2A4A] text-xs font-bold">LA MEC CONSEILS</span>
@@ -79,33 +84,60 @@ export default function App() {
 								>
 									Accès Espace Client
 								</button>
-							</div>
+							</motion.div>
 							
 							<div className="w-full max-w-[839px]">
-								<h1 className="scroll-animate text-[#1B2A4A] text-4xl md:text-5xl lg:text-[70px] font-bold leading-tight mb-6">
+								<motion.h1 
+									initial={{ opacity: 0, y: 30 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+									className="text-[#1B2A4A] text-4xl md:text-5xl lg:text-[70px] font-bold leading-tight mb-6"
+								>
 									Le Nouveau Moteur de<br className="hidden md:block"/>Croissance<br className="hidden md:block"/>de Votre Activité Touristique
-								</h1>
-								<p className="text-gray-500 text-base md:text-lg max-w-[600px] mb-8">
+								</motion.h1>
+								<motion.p 
+									initial={{ opacity: 0, y: 20 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.8, delay: 0.25, ease: "easeOut" }}
+									className="text-gray-500 text-base md:text-lg max-w-[600px] mb-8"
+								>
 									Connectez votre offre locale de tourisme et d'animation aux plateformes mondiales. Maximisez vos profits en direct.
-								</p>
-								<div className="bg-[#F59E0B] w-16 h-1 rounded-full mb-10"></div>
+								</motion.p>
+								<motion.div 
+									initial={{ opacity: 0, scaleX: 0 }}
+									animate={{ opacity: 1, scaleX: 1 }}
+									transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+									className="origin-left bg-[#F59E0B] w-16 h-1 rounded-full mb-10"
+								></motion.div>
 							</div>
 							
-							<button className="flex flex-col sm:flex-row items-start sm:items-center bg-white/60 md:bg-[#1B2A4A12] py-3 px-6 gap-2 sm:gap-11 rounded-xl hover:bg-black/10 transition-colors border-0" onClick={() => alert("Action cliquée !")}>
+							<motion.button 
+								initial={{ opacity: 0, y: 15 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
+								className="flex flex-col sm:flex-row items-start sm:items-center bg-white/60 md:bg-[#1B2A4A12] py-3 px-6 gap-2 sm:gap-11 rounded-xl hover:bg-black/10 transition-colors border-0" 
+								onClick={() => alert("Action cliquée !")}
+							>
 								<span className="text-[#1B2A4A] text-sm font-bold">Manager</span>
 								<span className="text-[#1B2A4A] text-sm font-bold break-all">Manager@lameconseils.ma</span>
-							</button>
+							</motion.button>
 						</div>
 					</div>
 				</section>
 
 				{/* Stats Section */}
 				<section className="px-4 md:px-10 mb-14 lg:mb-24">
-					<div className="flex flex-col lg:flex-row bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+					<motion.div 
+						initial={{ opacity: 0, y: 40 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-100px" }}
+						transition={{ duration: 0.8, ease: "easeOut" }}
+						className="flex flex-col lg:flex-row bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden"
+					>
 						<div className="flex flex-col flex-1 p-8 md:py-[39px] md:px-10 gap-2 border-b lg:border-b-0 lg:border-r border-gray-100">
-							<span className="scroll-animate text-[#1B2A4A] text-base font-bold">Le Coût de l'Inaction Commerciale</span>
+							<span className="text-[#1B2A4A] text-base font-bold">Le Coût de l'Inaction Commerciale</span>
 							<span className="text-[#F59E0B] text-6xl md:text-[110px] font-bold leading-none my-4">85%</span>
-							<span className="scroll-animate text-[#1B2A4A] text-base font-bold">des demandes sans réponse sont perdues</span>
+							<span className="text-[#1B2A4A] text-base font-bold">des demandes sans réponse sont perdues</span>
 						</div>
 						<div className="flex flex-col flex-1 p-8 md:py-[43px] md:px-10 justify-center">
 							<h3 className="text-[#1B2A4A] text-xl font-bold mb-4">L'Exigence Absolue d'Immédiateté</h3>
@@ -116,39 +148,77 @@ export default function App() {
 								De plus, la commission des agences en ligne internationales (OTA) dépasse en moyenne 15% à 25% de votre chiffre d'affaires, rognant votre rentabilité directe.
 							</p>
 						</div>
-					</div>
+					</motion.div>
 				</section>
 
 				{/* Features Section */}
 				<section className="w-full py-16 mb-14 lg:mb-24 bg-gradient-to-b from-transparent via-gray-50/80 to-transparent">
 					<div className="w-full max-w-[1104px] mx-auto px-4 md:px-8 flex flex-col items-center gap-10">
-						<h2 className="text-[#1B2A4A] text-2xl md:text-[22px] font-bold text-center">L'Écosystème de Vente Directe Connecté</h2>
+						<motion.h2 
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true, margin: "-100px" }}
+							transition={{ duration: 0.6, ease: "easeOut" }}
+							className="text-[#1B2A4A] text-2xl md:text-[22px] font-bold text-center"
+						>
+							L'Écosystème de Vente Directe Connecté
+						</motion.h2>
 						
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
-							<div className="flex flex-col bg-white p-8 gap-4 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+						<motion.div 
+							variants={{
+								hidden: { opacity: 0 },
+								show: {
+									opacity: 1,
+									transition: { staggerChildren: 0.2 }
+								}
+							}}
+							initial="hidden"
+							whileInView="show"
+							viewport={{ once: true, margin: "-100px" }}
+							className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full"
+						>
+							<motion.div 
+								variants={{
+									hidden: { opacity: 0, y: 30 },
+									show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+								}}
+								className="flex flex-col bg-white p-8 gap-4 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+							>
 								<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/nsgkor0z_expires_30_days.png" className="w-10 h-10 rounded-xl object-cover mb-2" alt="Icon" />
 								<div>
 									<h4 className="text-[#1B2A4A] text-lg font-bold mb-3">Interconnexion APIs Performante</h4>
 									<p className="text-gray-600 text-sm mb-3 leading-relaxed">Nous intégrons vos canaux de réservation et d'animation directement avec les grandes plateformes de distribution connectée internationalement.</p>
 									<p className="text-gray-600 text-sm leading-relaxed">Visez l'excellence technique et transformez décentralisément pour optimiser l'expérience et vos taux de succès.</p>
 								</div>
-							</div>
+							</motion.div>
 							
-							<div className="flex flex-col bg-white p-8 gap-4 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+							<motion.div 
+								variants={{
+									hidden: { opacity: 0, y: 30 },
+									show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+								}}
+								className="flex flex-col bg-white p-8 gap-4 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+							>
 								<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/hvjxwkcn_expires_30_days.png" className="w-10 h-10 rounded-xl object-cover mb-2" alt="Icon" />
 								<div>
 									<h4 className="text-[#1B2A4A] text-lg font-bold mb-3">Boutiques & Vitrines Préétablies</h4>
 									<p className="text-gray-600 text-sm mb-3 leading-relaxed">Nous déployons des vitrines digitales sur-mesure et des boutiques de commerce en ligne pour votre structure.</p>
 									<p className="text-gray-600 text-sm leading-relaxed">Mettez en avant l'essence unique de votre offre et offrez une interface claire, attractive et aide conversion.</p>
 								</div>
-							</div>
-						</div>
+							</motion.div>
+						</motion.div>
 					</div>
 				</section>
 
 				{/* Section 01 */}
-				<section className="flex flex-col lg:flex-row items-center px-4 md:px-12 mb-14 lg:mb-24 gap-12 max-w-[1200px] mx-auto w-full">
-					<div className="flex flex-col flex-1 w-full">
+				<section className="flex flex-col lg:flex-row items-center px-4 md:px-12 mb-14 lg:mb-24 gap-12 max-w-[1200px] mx-auto w-full overflow-hidden">
+					<motion.div 
+						initial={{ opacity: 0, x: -50 }}
+						whileInView={{ opacity: 1, x: 0 }}
+						viewport={{ once: true, margin: "-100px" }}
+						transition={{ duration: 0.7, ease: "easeOut" }}
+						className="flex flex-col flex-1 w-full"
+					>
 						<div className="bg-[#52B788] w-12 h-0.5 mb-5"></div>
 						<span className="text-[#52B788] text-xs font-bold mb-4 tracking-wider uppercase">Plateformes</span>
 						<h2 className="text-[#1B2A4A] text-3xl md:text-4xl font-bold mb-6">01. Plateformes d'Animation</h2>
@@ -172,37 +242,87 @@ export default function App() {
 								<p className="text-[#1B2A4A] text-sm leading-relaxed"><strong className="font-bold">Passerelles de Paiement :</strong> Intégration locale et internationale pour un encaissement direct sur votre compte.</p>
 							</div>
 						</div>
-					</div>
-					<div className="flex-1 w-full flex justify-center lg:justify-end">
+					</motion.div>
+					<motion.div 
+						initial={{ opacity: 0, x: 50 }}
+						whileInView={{ opacity: 1, x: 0 }}
+						viewport={{ once: true, margin: "-100px" }}
+						transition={{ duration: 0.7, ease: "easeOut" }}
+						className="flex-1 w-full flex justify-center lg:justify-end"
+					>
 						<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/cllhgp6i_expires_30_days.png" className="w-full max-w-[500px] lg:max-w-full h-auto object-cover rounded-2xl" alt="App interface preview" />
-					</div>
+					</motion.div>
 				</section>
 
 				{/* Solutions */}
 				<section className="px-4 md:px-12 mb-14 lg:mb-24 max-w-[1200px] mx-auto w-full">
-					<h3 className="text-center text-black text-[22px] leading-[29px] font-bold mb-8">Solutions Adaptées À Votre Secteur</h3>
-					<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-						<div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col gap-4">
+					<motion.h3 
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-100px" }}
+						transition={{ duration: 0.5, ease: "easeOut" }}
+						className="text-center text-black text-[22px] leading-[29px] font-bold mb-8"
+					>
+						Solutions Adaptées À Votre Secteur
+					</motion.h3>
+					<motion.div 
+						variants={{
+							hidden: { opacity: 0 },
+							show: {
+								opacity: 1,
+								transition: { staggerChildren: 0.15 }
+							}
+						}}
+						initial="hidden"
+						whileInView="show"
+						viewport={{ once: true, margin: "-100px" }}
+						className="grid grid-cols-1 md:grid-cols-3 gap-6"
+					>
+						<motion.div 
+							variants={{
+								hidden: { opacity: 0, y: 30 },
+								show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+							}}
+							className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col gap-4"
+						>
 							<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/1p3ej3s1_expires_30_days.png" className="w-12 h-12 rounded-xl object-cover" alt="" />
 							<h4 className="text-black text-base font-bold">Hébergements & Riads</h4>
 							<p className="text-gray-600 text-sm leading-relaxed">Vitrines de prestige, centralisation multicannale et excellence commerciale via la liaison pour capter et fidéliser directeurs de talents.</p>
-						</div>
-						<div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col gap-4">
+						</motion.div>
+						<motion.div 
+							variants={{
+								hidden: { opacity: 0, y: 30 },
+								show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+							}}
+							className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col gap-4"
+						>
 							<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/24lxttby_expires_30_days.png" className="w-12 h-12 rounded-xl object-cover" alt="" />
 							<h4 className="text-black text-base font-bold">Surf Camps & Loisirs</h4>
 							<p className="text-gray-600 text-sm leading-relaxed">Vente de cours à la carte, gestion des stocks d'équipements et coordination de sessions en direct via des espaces dynamiques et engageants.</p>
-						</div>
-						<div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col gap-4">
+						</motion.div>
+						<motion.div 
+							variants={{
+								hidden: { opacity: 0, y: 30 },
+								show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+							}}
+							className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col gap-4"
+						>
 							<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/1f7gln9e_expires_30_days.png" className="w-12 h-12 rounded-xl object-cover" alt="" />
 							<h4 className="text-black text-base font-bold">Agences & Excursions</h4>
 							<p className="text-gray-600 text-sm leading-relaxed">Catalogues interactifs d'expériences, plannings dynamiques des guides, et suivi personnalisé des réservations en temps réel.</p>
-						</div>
-					</div>
+						</motion.div>
+					</motion.div>
 				</section>
 
 				{/* Section 02 */}
-				<section className="flex flex-col-reverse lg:flex-row items-center px-4 md:px-12 mb-20 lg:mb-32 gap-12 max-w-[1200px] mx-auto w-full">
-					<div className="flex flex-col flex-1 gap-6 w-full">
+				<section className="flex flex-col-reverse lg:flex-row items-center px-4 md:px-12 mb-20 lg:mb-32 gap-12 max-w-[1200px] mx-auto w-full overflow-hidden">
+					<motion.div 
+						initial={{ opacity: 0, x: -50 }}
+						whileInView={{ opacity: 1, x: 0 }}
+						viewport={{ once: true, margin: "-100px" }}
+						transition={{ duration: 0.7, ease: "easeOut" }}
+						className="flex flex-col flex-1 gap-6 w-full"
+					>
 						<div>
 							<div className="bg-[#52B788] w-12 h-0.5 mb-5"></div>
 							<span className="text-[#52B788] text-xs font-bold mb-4 block tracking-wider uppercase">Attractivité & Autorité</span>
@@ -223,55 +343,115 @@ export default function App() {
 								</p>
 							</div>
 						</div>
-					</div>
-					<div className="flex-1 w-full flex justify-center lg:justify-end">
+					</motion.div>
+					<motion.div 
+						initial={{ opacity: 0, x: 50 }}
+						whileInView={{ opacity: 1, x: 0 }}
+						viewport={{ once: true, margin: "-100px" }}
+						transition={{ duration: 0.7, ease: "easeOut" }}
+						className="flex-1 w-full flex justify-center lg:justify-end"
+					>
 						<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/17cbnt4k_expires_30_days.png" className="w-full max-w-[500px] lg:max-w-full rounded-2xl object-cover" alt="" />
-					</div>
+					</motion.div>
 				</section>
 
 				{/* Section 07 */}
 				<section className="px-4 md:px-12 mb-20 lg:mb-32 max-w-[1200px] mx-auto w-full">
-					<div className="mb-10 text-center lg:text-left">
+					<motion.div 
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-100px" }}
+						transition={{ duration: 0.5, ease: "easeOut" }}
+						className="mb-10 text-center lg:text-left"
+					>
 						<div className="bg-[#52B788] w-12 h-0.5 mb-5 mx-auto lg:mx-0"></div>
 						<span className="text-[#52B788] text-xs font-bold mb-4 block tracking-wider uppercase">Méthodologie</span>
 						<h2 className="text-[#1B2A4A] text-3xl md:text-4xl font-bold">07. Plan de Déploiement</h2>
-					</div>
+					</motion.div>
 					
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
-						<div className="flex flex-col items-center text-center gap-4 bg-gray-50/50 p-6 rounded-2xl">
+					<motion.div 
+						variants={{
+							hidden: { opacity: 0 },
+							show: {
+								opacity: 1,
+								transition: { staggerChildren: 0.12 }
+							}
+						}}
+						initial="hidden"
+						whileInView="show"
+						viewport={{ once: true, margin: "-100px" }}
+						className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6"
+					>
+						<motion.div 
+							variants={{
+								hidden: { opacity: 0, y: 25 },
+								show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+							}}
+							className="flex flex-col items-center text-center gap-4 bg-gray-50/50 p-6 rounded-2xl"
+						>
 							<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/c7z9akd8_expires_30_days.png" className="w-14 h-14 object-contain mb-2" alt="" />
 							<span className="text-[#52B788] text-[10px] font-bold uppercase tracking-wider">Étape 1</span>
 							<p className="text-[#1B2A4A] text-sm leading-relaxed">Audit UI, audit sémantique et mise en ligne de l'audience au lancement de l'étude d'objets.</p>
-						</div>
-						<div className="flex flex-col items-center text-center gap-4 bg-gray-50/50 p-6 rounded-2xl">
+						</motion.div>
+						<motion.div 
+							variants={{
+								hidden: { opacity: 0, y: 25 },
+								show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+							}}
+							className="flex flex-col items-center text-center gap-4 bg-gray-50/50 p-6 rounded-2xl"
+						>
 							<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/8wenmxb5_expires_30_days.png" className="w-14 h-14 object-contain mb-2" alt="" />
 							<span className="text-[#52B788] text-[10px] font-bold uppercase tracking-wider">Étape 2</span>
 							<p className="text-[#1B2A4A] text-sm leading-relaxed">Shooting drone & sol, développement et fidélité de l'image et enrichissement de l'offre réseaux.</p>
-						</div>
-						<div className="flex flex-col items-center text-center gap-4 bg-gray-50/50 p-6 rounded-2xl">
+						</motion.div>
+						<motion.div 
+							variants={{
+								hidden: { opacity: 0, y: 25 },
+								show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+							}}
+							className="flex flex-col items-center text-center gap-4 bg-gray-50/50 p-6 rounded-2xl"
+						>
 							<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/nve3ys90_expires_30_days.png" className="w-14 h-14 object-contain mb-2" alt="" />
 							<span className="text-[#52B788] text-[10px] font-bold uppercase tracking-wider">Étape 3</span>
 							<p className="text-[#1B2A4A] text-sm leading-relaxed">Déploiement des VPN dédiés et intégration des paiements en cours d'un environnement des offres.</p>
-						</div>
-						<div className="flex flex-col items-center text-center gap-4 bg-gray-50/50 p-6 rounded-2xl">
+						</motion.div>
+						<motion.div 
+							variants={{
+								hidden: { opacity: 0, y: 25 },
+								show: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+							}}
+							className="flex flex-col items-center text-center gap-4 bg-gray-50/50 p-6 rounded-2xl"
+						>
 							<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/g6a5cq6y_expires_30_days.png" className="w-14 h-14 object-contain mb-2" alt="" />
 							<span className="text-[#52B788] text-[10px] font-bold uppercase tracking-wider">Étape 4</span>
 							<p className="text-[#1B2A4A] text-sm leading-relaxed">Go-Live global, formation des équipes hôtelières et révision finale des offres.</p>
-						</div>
-					</div>
+						</motion.div>
+					</motion.div>
 				</section>
 
 				{/* Section 08 */}
 				<section className="px-4 md:px-12 mb-20 lg:mb-32 max-w-[1104px] mx-auto w-full">
-					<div className="mb-12">
+					<motion.div 
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-100px" }}
+						transition={{ duration: 0.5, ease: "easeOut" }}
+						className="mb-12"
+					>
 						<div className="bg-[#52B788] w-12 h-0.5 mb-5"></div>
 						<span className="text-[#52B788] text-xs font-bold mb-4 block tracking-wider uppercase">Nos Résultats</span>
 						<h2 className="text-[#1B2A4A] text-3xl md:text-4xl font-bold">08. Maximisez Vos Marges</h2>
-					</div>
+					</motion.div>
 					
 					<div className="flex flex-col gap-8 mb-12">
 						{/* Bar 1 */}
-						<div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+						<motion.div 
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true, margin: "-100px" }}
+							transition={{ duration: 0.5 }}
+							className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6"
+						>
 							<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/pynzasbb_expires_30_days.png" className="w-12 h-12 object-contain shrink-0 hidden sm:block" alt="" />
 							<div className="flex-1 flex flex-col gap-3">
 								<div className="flex flex-wrap justify-between items-center gap-2">
@@ -285,13 +465,25 @@ export default function App() {
 									</div>
 								</div>
 								<div className="w-full bg-gray-100 h-4 rounded-full overflow-hidden">
-									<div className="bg-[#52B788] w-[90%] h-full rounded-full transition-all duration-1000"></div>
+									<motion.div 
+										initial={{ width: "0%" }}
+										whileInView={{ width: "90%" }}
+										viewport={{ once: true }}
+										transition={{ duration: 1.2, delay: 0.1, ease: "easeOut" }}
+										className="bg-[#52B788] h-full rounded-full"
+									></motion.div>
 								</div>
 							</div>
-						</div>
+						</motion.div>
 						
 						{/* Bar 2 */}
-						<div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+						<motion.div 
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true, margin: "-100px" }}
+							transition={{ duration: 0.5 }}
+							className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6"
+						>
 							<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/jx0tmjlf_expires_30_days.png" className="w-12 h-12 object-contain shrink-0 hidden sm:block" alt="" />
 							<div className="flex-1 flex flex-col gap-3">
 								<div className="flex flex-wrap justify-between items-center gap-2">
@@ -305,13 +497,25 @@ export default function App() {
 									</div>
 								</div>
 								<div className="w-full bg-gray-100 h-4 rounded-full overflow-hidden">
-									<div className="bg-[#FCD34D] w-[60%] h-full rounded-full transition-all duration-1000"></div>
+									<motion.div 
+										initial={{ width: "0%" }}
+										whileInView={{ width: "60%" }}
+										viewport={{ once: true }}
+										transition={{ duration: 1.2, delay: 0.2, ease: "easeOut" }}
+										className="bg-[#FCD34D] h-full rounded-full"
+									></motion.div>
 								</div>
 							</div>
-						</div>
+						</motion.div>
 						
 						{/* Bar 3 */}
-						<div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+						<motion.div 
+							initial={{ opacity: 0, y: 20 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							viewport={{ once: true, margin: "-100px" }}
+							transition={{ duration: 0.5 }}
+							className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6"
+						>
 							<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/pvxuhgis_expires_30_days.png" className="w-12 h-12 object-contain shrink-0 hidden sm:block" alt="" />
 							<div className="flex-1 flex flex-col gap-3">
 								<div className="flex flex-wrap justify-between items-start sm:items-center gap-2">
@@ -328,25 +532,43 @@ export default function App() {
 									</div>
 								</div>
 								<div className="w-full bg-gray-100 h-4 rounded-full overflow-hidden">
-									<div className="bg-[#F97316] w-[70%] h-full rounded-full transition-all duration-1000"></div>
+									<motion.div 
+										initial={{ width: "0%" }}
+										whileInView={{ width: "70%" }}
+										viewport={{ once: true }}
+										transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
+										className="bg-[#F97316] h-full rounded-full"
+									></motion.div>
 								</div>
 							</div>
-						</div>
+						</motion.div>
 					</div>
 					
-					<div className="flex items-start sm:items-center gap-5 bg-gray-50 p-6 md:p-8 rounded-2xl border border-gray-100">
+					<motion.div 
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-100px" }}
+						transition={{ duration: 0.5, delay: 0.2 }}
+						className="flex items-start sm:items-center gap-5 bg-gray-50 p-6 md:p-8 rounded-2xl border border-gray-100"
+					>
 						<img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/yG6rnZOno2/p15d71m5_expires_30_days.png" className="w-10 h-10 object-contain shrink-0" alt="" />
 						<p className="text-[#1B2A4A] text-sm leading-relaxed">
 							En privilégiant nos canaux directs, vous récupérez jusqu'à 25% de revenus supplémentaires à chaque vente et renforcez votre rentabilité de votre ROI dès la première saison.
 						</p>
-					</div>
+					</motion.div>
 				</section>
 
 				{/* Section 10 */}
-				<section className="px-4 md:px-12 mb-20 lg:mb-32 max-w-[1200px] mx-auto w-full">
+				<section className="px-4 md:px-12 mb-20 lg:mb-32 max-w-[1200px] mx-auto w-full overflow-hidden">
 					<div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
 						{/* Left Card */}
-						<div className="w-full lg:w-[380px] bg-white p-8 md:p-10 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/40 flex flex-col shrink-0 relative overflow-hidden">
+						<motion.div 
+							initial={{ opacity: 0, x: -50 }}
+							whileInView={{ opacity: 1, x: 0 }}
+							viewport={{ once: true, margin: "-100px" }}
+							transition={{ duration: 0.7, ease: "easeOut" }}
+							className="w-full lg:w-[380px] bg-white p-8 md:p-10 rounded-3xl border border-gray-100 shadow-xl shadow-gray-200/40 flex flex-col shrink-0 relative overflow-hidden"
+						>
 							<div className="absolute top-0 right-0 w-32 h-32 bg-[#52B788]/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
 							<div className="inline-flex self-start py-1.5 px-4 mb-8 bg-gray-100 rounded-full relative z-10">
 								<span className="text-gray-800 text-[10px] font-bold tracking-wider">LANCEMENT SAISON PROCHAINE</span>
@@ -358,10 +580,16 @@ export default function App() {
 							<button className="mt-auto w-full py-4 px-6 rounded-full border border-gray-200 font-bold text-sm hover:bg-gray-50 hover:border-gray-300 transition-all relative z-10" onClick={() => alert("Pressed!")}>
 								Découvrez l'offre →
 							</button>
-						</div>
+						</motion.div>
 						
 						{/* Right Content */}
-						<div className="flex-1 flex flex-col">
+						<motion.div 
+							initial={{ opacity: 0, x: 50 }}
+							whileInView={{ opacity: 1, x: 0 }}
+							viewport={{ once: true, margin: "-100px" }}
+							transition={{ duration: 0.7, ease: "easeOut" }}
+							className="flex-1 flex flex-col"
+						>
 							<div className="mb-10">
 								<div className="bg-[#52B788] w-12 h-0.5 mb-5"></div>
 								<span className="text-[#52B788] text-xs font-bold mb-4 block tracking-wider uppercase">Nos Offres</span>
@@ -415,23 +643,36 @@ export default function App() {
 									</div>
 								</div>
 							</div>
-						</div>
+						</motion.div>
 					</div>
 				</section>
 
 				{/* Form Section */}
 				<section id="eligibility-section" className="px-4 md:px-12 mb-24 max-w-[1200px] mx-auto w-full">
-					<div className="mb-12">
+					<motion.div 
+						initial={{ opacity: 0, y: 20 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-100px" }}
+						transition={{ duration: 0.5, ease: "easeOut" }}
+						className="mb-12"
+					>
 						<div className="bg-[#52B788] w-12 h-0.5 mb-5"></div>
 						<span className="text-[#52B788] text-xs font-bold mb-4 block tracking-wider uppercase">Éligibilité</span>
 						<h2 className="text-[#1B2A4A] text-3xl md:text-4xl font-bold">11. Formulaire d'Éligibilité</h2>
-					</div>
+					</motion.div>
 					
-					<EligibilityWizard onNavigateToEspaceClient={() => {
-						setCurrentView('espace-client');
-						// Scroll to top of the page so EspaceClient login is visible
-						window.scrollTo({ top: 0, behavior: 'smooth' });
-					}} />
+					<motion.div
+						initial={{ opacity: 0, y: 30 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, margin: "-100px" }}
+						transition={{ duration: 0.7, ease: "easeOut" }}
+					>
+						<EligibilityWizard onNavigateToEspaceClient={() => {
+							setCurrentView('espace-client');
+							// Scroll to top of the page so EspaceClient login is visible
+							window.scrollTo({ top: 0, behavior: 'smooth' });
+						}} />
+					</motion.div>
 				</section>
 
 				{/* Footer */}
