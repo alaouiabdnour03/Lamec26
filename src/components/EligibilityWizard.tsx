@@ -195,7 +195,7 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
     if (step === 2) {
       await evaluateEligibility();
     }
-    if (step < 4) setStep(step + 1);
+    if (step < 3) setStep(step + 1);
   };
 
   const generateAccessCode = () => {
@@ -211,10 +211,6 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
 
   const submitToSupabase = async () => {
     setValidationError('');
-    if (!fileRC) {
-      setValidationError("Le Registre de commerce * est un champ obligatoire pour procéder.");
-      return;
-    }
     setUploading(true);
     setUploadStatus('Vérification et création du dossier…');
 
@@ -266,14 +262,7 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
 
       if (createDossierError) throw new Error(createDossierError.message);
 
-      setUploadStatus('Envoi des documents...');
-      if (fileStatuts) await uploadFile(fileStatuts, 'Statuts');
-      if (fileRC) await uploadFile(fileRC, 'RC');
-      if (fileFiscale) await uploadFile(fileFiscale, 'Fiscale');
-      if (fileCnss) await uploadFile(fileCnss, 'CNSS');
-      if (fileBilan) await uploadFile(fileBilan, 'Bilan');
-
-      setUploadStatus("Envoi de l'email...");
+      setUploadStatus("Envoi de l'email de confirmation...");
       try {
         await fetch('/api/send-email', {
           method: 'POST',
@@ -299,19 +288,18 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
       }
 
       setUploadStatus('Dossier soumis avec succès !');
-      setStep(5); 
+      setStep(4); 
     } catch (error: any) {
       setUploadStatus(`Erreur : ${error.message}`);
     }
     setUploading(false);
   };
 
-  const TOTAL_STEPS = 4;
+  const TOTAL_STEPS = 3;
   const WIZARD_TITLES = [
     "Identification de l'établissement",
     "Secteur & Activité",
-    "Besoins & Présence Digitale",
-    "Pièces Jointes"
+    "Besoins & Présence Digitale"
   ];
 
   const showCustomActivity = sector === 'autre' || activity === 'autre-tourisme' || activity === 'autre-commerce';
@@ -319,7 +307,7 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
   return (
     <div className="flex items-center justify-center w-full text-slate-800 font-sans">
       <div className="w-full max-w-[800px] bg-white rounded-3xl shadow-[0_20px_50px_rgba(15,118,110,0.05)] overflow-hidden border border-slate-100/80">
-        {step < 5 && (
+        {step < 4 && (
           <div className="p-8 md:p-10 border-b border-slate-100/60">
             <header className="flex flex-col md:flex-row justify-between gap-4 items-start mb-6">
               <div>
@@ -494,89 +482,6 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
           )}
 
           {step === 4 && (
-            <div className="animate-in fade-in slide-in-from-right-4 duration-500 font-sans">
-              
-              {validationError && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-700 rounded-2xl text-xs font-bold flex items-center gap-2">
-                  <span>{validationError}</span>
-                </div>
-              )}
-
-              <div className="space-y-6">
-                
-                {/* Statuts */}
-                <div className="space-y-2">
-                  <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Statuts de l'entreprise</label>
-                  <label className="flex items-center justify-between border border-slate-200 rounded-xl p-3 bg-slate-50 cursor-pointer hover:border-slate-300 hover:bg-white transition-colors">
-                    <span className="text-sm text-slate-400 font-semibold truncate flex-1">
-                      {fileStatuts ? fileStatuts.name : "Sélectionner un fichier"}
-                    </span>
-                    <Upload className="w-4 h-4 text-slate-400" />
-                    <input type="file" className="hidden" onChange={(e) => { e.target.files && setFileStatuts(e.target.files[0]); setValidationError(''); }} />
-                  </label>
-                </div>
-
-                {/* RC */}
-                <div className="space-y-2">
-                  <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Registre de commerce <span className="text-red-500">*</span></label>
-                  <label className={`flex items-center justify-between border rounded-xl p-3 bg-slate-50 cursor-pointer hover:bg-white transition-colors ${validationError ? 'border-red-300 ring-2 ring-red-100' : 'border-slate-200 hover:border-slate-300'}`}>
-                    <span className={`text-sm font-semibold truncate flex-1 ${fileRC ? 'text-slate-900 font-bold' : 'text-slate-400'}`}>
-                      {fileRC ? fileRC.name : "Sélectionner un fichier"}
-                    </span>
-                    <Upload className="w-4 h-4 text-slate-400" />
-                    <input type="file" className="hidden" onChange={(e) => { e.target.files && setFileRC(e.target.files[0]); setValidationError(''); }} />
-                  </label>
-                </div>
-
-                {/* Régularité fiscale */}
-                <div className="space-y-2">
-                  <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Régularité fiscale</label>
-                  <label className="flex items-center justify-between border border-slate-200 rounded-xl p-3 bg-slate-50 cursor-pointer hover:border-slate-300 hover:bg-white transition-colors">
-                    <span className="text-sm text-slate-400 font-semibold truncate flex-1">
-                      {fileFiscale ? fileFiscale.name : "Sélectionner un fichier"}
-                    </span>
-                    <Upload className="w-4 h-4 text-slate-400" />
-                    <input type="file" className="hidden" onChange={(e) => { e.target.files && setFileFiscale(e.target.files[0]); setValidationError(''); }} />
-                  </label>
-                </div>
-
-                {/* CNSS */}
-                <div className="space-y-2">
-                  <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Régularité de soumission CNSS</label>
-                  <label className="flex items-center justify-between border border-slate-200 rounded-xl p-3 bg-slate-50 cursor-pointer hover:border-slate-300 hover:bg-white transition-colors">
-                    <span className="text-sm text-slate-400 font-semibold truncate flex-1">
-                      {fileCnss ? fileCnss.name : "Sélectionner un fichier"}
-                    </span>
-                    <Upload className="w-4 h-4 text-slate-400" />
-                    <input type="file" className="hidden" onChange={(e) => { e.target.files && setFileCnss(e.target.files[0]); setValidationError(''); }} />
-                  </label>
-                </div>
-
-                {/* Bilan */}
-                <div className="space-y-2">
-                  <label className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Bilan des 2 années passées</label>
-                  <label className="flex items-center justify-between border border-slate-200 rounded-xl p-3 bg-slate-50 cursor-pointer hover:border-slate-300 hover:bg-white transition-colors">
-                    <span className="text-sm text-slate-400 font-semibold truncate flex-1">
-                      {fileBilan ? fileBilan.name : "Sélectionner un fichier"}
-                    </span>
-                    <Upload className="w-4 h-4 text-slate-400" />
-                    <input type="file" className="hidden" onChange={(e) => { e.target.files && setFileBilan(e.target.files[0]); setValidationError(''); }} />
-                  </label>
-                </div>
-
-              </div>
-
-              {uploadStatus && (
-                <div className="mt-6 text-center">
-                  <p className="text-sm font-bold bg-teal-50 text-[#0f766e] border border-teal-100 p-4 rounded-xl inline-block w-full">
-                    {uploadStatus}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {step === 5 && (
             <div className="animate-in fade-in zoom-in-95 duration-500 text-center py-6 font-sans">
               <div className="w-20 h-20 bg-teal-100 text-[#0f766e] rounded-full flex items-center justify-center text-4xl mx-auto mb-6 shadow-inner font-bold">
                 ✓
@@ -629,7 +534,7 @@ export function EligibilityWizard({ onNavigateToEspaceClient }: EligibilityWizar
           )}
 
           {/* Navigation Footer */}
-          {step < 5 && (
+          {step < 4 && (
             <footer className="flex justify-between items-center mt-10 pt-6 border-t border-slate-100 gap-4 font-sans">
               <button
                 onClick={() => setStep(step - 1)}
