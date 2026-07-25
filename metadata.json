@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Générateur de Rapport de Diagnostic",
+  "description": "Un outil pour générer des rapports de diagnostic de transformation digitale au format PDF à l\u0027aide de l\u0027IA Gemini.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
